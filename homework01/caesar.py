@@ -11,7 +11,15 @@ def encrypt_caesar(plaintext):
     >>> encrypt_caesar("")
     ''
     """
-    # PUT YOUR CODE HERE
+    ciphertext = ''
+    for char in plaintext:
+        if (ord(char) in range(65,91)) or (ord(char) in range(97,123)):
+            if (ord(char)+3 in range(65,91)) or (ord(char)+3 in range(97,123)):
+                ciphertext += chr(ord(char)+3)
+            else:
+                ciphertext += chr(ord(char)-26+3)
+        else:
+            ciphertext += char
     return ciphertext
 
 
@@ -28,5 +36,13 @@ def decrypt_caesar(ciphertext):
     >>> decrypt_caesar("")
     ''
     """
-    # PUT YOUR CODE HERE
+    plaintext = ''
+    for char in ciphertext:
+        if (ord(char) in range(65,91)) or (ord(char) in range(97,123)):
+            if (ord(char)-3 in range(65,91)) or (ord(char)-3 in range(97,123)):
+                plaintext += chr(ord(char)-3)
+            else:
+                plaintext += chr(ord(char)+26-3)
+        else:
+            plaintext += char
     return plaintext
