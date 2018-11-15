@@ -1,3 +1,7 @@
+import time
+import threading
+import multiprocessing
+
 def read_sudoku(filename):
     """ Прочитать Судоку из указанного файла """
     digits = [c for c in open(filename).read() if c in '123456789.']
@@ -180,9 +184,37 @@ def generate_sudoku(N):
     return sudoku
 
 
+def run_solve(fname):
+    grid = read_sudoku(fname)
+    start = time.time()
+    solve(grid)
+    end = time.time()
+    print(f'{fname}: {end-start}')
+
+
 if __name__ == '__main__':
+    # последовательное решение
     for fname in ['puzzle1.txt', 'puzzle2.txt', 'puzzle3.txt']:
         grid = read_sudoku(fname)
         display(grid)
+        start = time.time()
         solution = solve(grid)
+        end = time.time()
+        print(f'{fname}: {end-start}')
         display(solution)
+    # многопоточное решение
+    for fname in ('puzzle1.txt', 'puzzle2.txt', 'puzzle3.txt'):
+        t = threading.Thread(target=run_solve, args=(fname,))
+        t.start()
+    # параллельное решение
+    for fname in ('puzzle1.txt', 'puzzle2.txt', 'puzzle3.txt'):
+        p = multiprocessing.Process(target=run_solve, args=(fname,))
+        p.start()
+    # сравнение подходов
+    N = 5
+    for _ in range(N):
+        t = threading.Thread(target=run_solve, args=('puzzle2.txt',))
+        t.start()
+    for _ in range(N):
+        p = multiprocessing.Process(target=run_solve, args=('puzzle2.txt',))
+        p.start()
