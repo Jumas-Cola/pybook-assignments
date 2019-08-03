@@ -6,14 +6,28 @@ def extract_news(parser):
     """ Extract news from a given web page """
     news_list = []
 
-    # PUT YOUR CODE HERE
+    authors = parser.select('.subtext > .hnuser')
+    comments = [i.text.split()[0]
+                for i in parser.select('.subtext > a:nth-child(6)')]
+    points = [i.text.split()[0] for i in parser.select('.subtext > .score')]
+    titles = parser.select('.athing > .title > a')
+    urls = parser.select('.athing .sitestr')
+
+    for aut, cmnt, pnt, ttl, url in zip(authors, comments, points, titles, urls):
+        news_list.append({
+            'author': aut.text,
+            'comments': int(cmnt) if cmnt.isdigit() else 0,
+            'points': int(pnt),
+            'title': ttl.text,
+            'url': url.text
+        })
 
     return news_list
 
 
 def extract_next_page(parser):
     """ Extract next page URL """
-    # PUT YOUR CODE HERE
+    return parser.select('.morelink[rel=next]')[0].get('href')
 
 
 def get_news(url, n_pages=1):
@@ -29,4 +43,3 @@ def get_news(url, n_pages=1):
         news.extend(news_list)
         n_pages -= 1
     return news
-
